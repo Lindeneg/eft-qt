@@ -15,7 +15,6 @@ class ItemList extends React.Component {
             this.setState({
                 items: res.data
             });
-            console.log(res.data);
         })
     }
 
