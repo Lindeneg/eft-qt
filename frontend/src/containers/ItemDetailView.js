@@ -23,7 +23,11 @@ const mQuests = (data, type) => {
 }
 
 const Title = (d, s) => {
-    
+    if (d.length > 0) {
+        return s;
+    } else {
+        return "";
+    }
 }
 
 
@@ -60,14 +64,15 @@ class ItemDetail extends React.Component {
         }
 
         return (
-            <Card title={this.state.item.name}>
+            <Card title={this.state.item.name + " - " + this.state.item.item_type}>
                 <img src={this.state.img.path} height={this.state.img.height} width={this.state.img.width} alt=""/>
                 <br/><br/>
                 <a href={this.state.item.url}>Tarkov Wiki</a>
+                <br/><br/>
                 <p>{BCString(this.state.notes.barter_item, this.state.notes.crafting_item)}</p>
-                <h5>{Title(quests)}</h5>
+                <h3>{Title(quests, "Quests")}</h3>
                 {quests}
-                <h5>{Title(hideout)}</h5>
+                <h3>{Title(hideout, "Hideout")}</h3>
                 {hideout}
             </Card>
         );
