@@ -1,6 +1,5 @@
 import React from 'react';
 import 'antd/dist/antd.css';
-import './App.css';
 
 import DefaultLayout from './containers/Layout';
 import ItemList from './containers/ItemListView';
