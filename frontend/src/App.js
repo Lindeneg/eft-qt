@@ -1,19 +1,22 @@
 import React from 'react';
-import 'antd/dist/antd.css';
+import { BrowserRouter } from 'react-router-dom';
 
+import DefaultRouter from './routes';
 import DefaultLayout from './containers/Layout';
-import ItemList from './containers/ItemListView';
+
+import 'antd/dist/antd.css';
 
 
 function App() {
   return (
     <div className="App">
-      <DefaultLayout>
-        <ItemList />
-      </DefaultLayout>
+      <BrowserRouter>
+        <DefaultLayout>
+          <DefaultRouter />
+        </DefaultLayout>
+      </BrowserRouter>
     </div>
   );
 }
-
 
 export default App;
