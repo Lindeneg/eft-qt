@@ -11,7 +11,8 @@ https://escapefromtarkov.gamepedia.com
 """
 
 from typing import Union, MutableSequence, Sequence, Tuple, List, MutableMapping, Optional, Dict, Any
-import sys
+from sys import exit as sExit
+from time import time
 
 from lxml import html
 from lxml.html import HtmlElement
@@ -32,8 +33,10 @@ class Scraper:
         self.items: Sequence[const.ITEM_TYPE] = []
 
     def update_items(self) -> None:
+        start: float = time()
         content: HtmlElement = GetContent()
         self.items = SortContent(content)
+        print(f"Updated {len(self.items)} items in {abs(start-time())} seconds")
     
     def update_backend(
         self,
@@ -44,20 +47,25 @@ class Scraper:
     ) -> None:
         if len(self.items) <= 0:
             return
+        start: float = time()
+        postedItems: int = 0
+        errors: int = 0
         for i in range(len(self.items)):
             self.items[i]["img_info"] = str(self.items[i]["img_info"])
             self.items[i]["notes"] = str(self.items[i]["notes"])
             try:
                 res: Response = post(url=f"{host}:{port}/{param}/", headers=headers, data=self.items[i])
                 if res.status_code == 200 or res.status_code == 201:
-                    print("Successful post of ", self.items[i]["name"])
+                    print(f"POST #{i} success of {self.items[i]['name']}")
+                    postedItems += 1
                 else:
-                    print("Unsuccessful post of {i}: {r}".format(i=self.items[i]['name'], r=res.content)) #type: ignore[str-bytes-safe]
+                    print(f"POST #{i} unsuccessful of {self.items[i]['name']} -> {res.content}") #type: ignore[str-bytes-safe]
+                    errors += 1
             except:
                 print("\nFailed to establish connection to backend. Make sure you're using the correct port and make sure the backend is running.")
                 print(f"Host: {host}\nPort: {port}")
-                sys.exit()
-        print("\nAll Done.")
+                sExit()
+        print(f"\nPosted {postedItems} items with {errors} errors in {abs(start-time())} seconds")
 
 
 def GetContent() -> HtmlElement:
@@ -68,7 +76,7 @@ def GetContent() -> HtmlElement:
     if req.status_code == 200:
         return html.fromstring(req.content)
     print(f"Failed to establish connection with error code {req.status_code}\nContent\n{req.content}") #type: ignore[str-bytes-safe]
-    sys.exit()
+    sExit()
 
 
 def SortContent(HTMLContent: HtmlElement) -> MutableSequence[const.ITEM_TYPE]:
@@ -166,6 +174,7 @@ def SortQH(items: MutableMapping[int, str]) -> MutableMapping[int, str]:
         bV = v.upper()
         if bV != const.BARTER.upper() and bV != const.BARTER.replace("_", " ").upper() \
             and bV != const.CRAFTING.upper() and bV != const.CRAFTING.replace("_", " ").upper():
+            v = (v.replace('"', "")).replace("'", "")
             mItems[k] = v
     return mItems
 
