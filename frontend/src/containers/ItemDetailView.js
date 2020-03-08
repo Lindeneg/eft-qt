@@ -24,6 +24,7 @@ const mQuests = (d, t) => {
     return q;
 }
 
+
 const Title = (d, s) => {
     if (d.length > 0) {
         return s;
@@ -33,14 +34,35 @@ const Title = (d, s) => {
 }
 
 
+const MetaCard = (i, m, n, q, h) => {
+    if (i.name === undefined) {
+        return (
+            <span/>
+        );
+    } else {
+        return (
+            <Card title={i.name + " - " + i.item_type}>
+                <img src={m.path} height={m.height} width={m.width} alt={i.name}/>
+                <br/><br/>
+                <a href={i.url}>Tarkov Wiki</a>
+                <br/><br/>
+                <p>{BCString(n.barter_item, n.crafting_item)}</p>
+                <h3>{Title(q, "Quests")}</h3>
+                {q}
+                <h3>{Title(h, "Hideout")}</h3>
+                {h}
+            </Card>
+        );
+    }
+}
+
+
 class ItemDetail extends React.Component {
-    
     state = {
         item: {},
         img: {},
         notes: {}
     }
-
     componentDidMount() {
         const itemName = this.props.match.params.name;
         axios.get(`http://127.0.0.1:8000/api/${itemName}`)
@@ -51,13 +73,13 @@ class ItemDetail extends React.Component {
                 notes: Replacer(res.data.notes)
             });
         })
+        .catch(err => {
+            console.log(err);
+        });
     }
-
     render() {
-
         const quests = [];
         const hideout = [];
-        
         try {
             for (const [index, value] of mQuests(this.state.notes, "quests").entries()) {
                 quests.push(<li key={index}>{value}</li>);   
@@ -67,7 +89,6 @@ class ItemDetail extends React.Component {
                 console.error("ViewError", err);
             }
         }
-
         try {
             for (const [index, value] of mQuests(this.state.notes, "hideout").entries()) {
                 hideout.push(<li key={index}>{value}</li>);
@@ -77,21 +98,11 @@ class ItemDetail extends React.Component {
                 console.error("ViewError", err);
             }
         }
-
         return (
-            <Card title={this.state.item.name + " - " + this.state.item.item_type}>
-                <img src={this.state.img.path} height={this.state.img.height} width={this.state.img.width} alt={this.state.item.name}/>
-                <br/><br/>
-                <a href={this.state.item.url}>Tarkov Wiki</a>
-                <br/><br/>
-                <p>{BCString(this.state.notes.barter_item, this.state.notes.crafting_item)}</p>
-                <h3>{Title(quests, "Quests")}</h3>
-                {quests}
-                <h3>{Title(hideout, "Hideout")}</h3>
-                {hideout}
-            </Card>
+            MetaCard(this.state.item, this.state.img, this.state.notes, quests, hideout)
         );
     }
 }
+
 
 export default ItemDetail;

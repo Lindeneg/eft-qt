@@ -7,7 +7,6 @@ const { Header, Content, Footer } = Layout;
 const { Search } = Input;
 
 
-
 const DefaultLayout = (props) => {
     return (
         <Layout className="layout">
@@ -32,5 +31,6 @@ const DefaultLayout = (props) => {
         </Layout>
     );
 }
+
 
 export default DefaultLayout;

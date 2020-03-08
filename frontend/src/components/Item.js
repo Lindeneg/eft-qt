@@ -4,6 +4,7 @@ import { List } from 'antd';
 import { Replacer, BCString } from '../tools/tools';
 import DEBUG from '../debug';
 
+
 const ItemDescription = (d) => {
   const newData = Replacer(d);
   try {
@@ -22,8 +23,8 @@ const ItemDescription = (d) => {
   }
 }
 
+
 const ItemMeta = (d) => {
-    //console.log("ITEMMETA", d);
     if (typeof(d) === undefined) {
         return (
             <span/>
@@ -38,6 +39,7 @@ const ItemMeta = (d) => {
     }
 }
 
+
 const Plural = (l, s) => {
     if (l === 1) {
       return s
@@ -45,6 +47,7 @@ const Plural = (l, s) => {
       return s + "s"
     }
 }
+
 
 const Item = (props) => {
     return (
@@ -59,5 +62,6 @@ const Item = (props) => {
         />
     );
 }
+
 
 export default Item;

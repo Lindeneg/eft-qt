@@ -22,6 +22,7 @@ const BCString = (barter, crafting) => {
     }
 }
 
+
 const Replacer = (data) => {
     let mData = data.replace(/'/g, '"');
     mData = mData.replace(/True/g, true);
@@ -37,5 +38,6 @@ const Replacer = (data) => {
         return mData;
     }
 }
+
 
 export { BCString, Replacer };
