@@ -23,6 +23,11 @@ class ItemList extends React.Component {
     }
 
     render() {
+
+        if (this.state.items.length === 1) {
+            window.location.replace(`/${this.state.items[0].name}`)
+        }
+
         return (
             <Items data={this.state.items}/>
         );

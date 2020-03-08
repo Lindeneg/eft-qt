@@ -14,7 +14,7 @@ const DefaultLayout = (props) => {
         <Header>
         <div>
             <Search
-            placeholder="(Currently Inactive)"
+            placeholder="Search Items ..."
             onSearch={value => window.location.replace(`/search/${value}`)}
             style={{ width: 200 }}
             />
