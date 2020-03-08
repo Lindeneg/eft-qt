@@ -16,5 +16,7 @@ Usage
 
 $ (env) python -m pip install -r requirements.txt
 
-$ (env) cd src && python manage.py runserver
+$ (env) cd src && python manage.py migrate
+
+$ (env) python manage.py runserver
 ```

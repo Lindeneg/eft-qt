@@ -11,10 +11,11 @@ https://escapefromtarkov.gamepedia.com
 """
 
 from typing import Union, MutableSequence, Sequence, Tuple, List, MutableMapping, Optional, Dict, Any
+import sys
 
 from lxml import html
 from lxml.html import HtmlElement
-from requests import get, post, Response, RequestException
+from requests import get, post, Response, RequestException, ConnectionError
 from bs4 import BeautifulSoup
 
 try:
@@ -46,11 +47,16 @@ class Scraper:
         for i in range(len(self.items)):
             self.items[i]["img_info"] = str(self.items[i]["img_info"])
             self.items[i]["notes"] = str(self.items[i]["notes"])
-            res: Response = post(url=f"{host}:{port}/{param}/", headers=headers, data=self.items[i])
-            if res.status_code == 200 or res.status_code == 201:
-                print("Successful post of ", self.items[i]["name"])
-            else:
-                print("Unsuccessful post of {i}: {r}".format(i=self.items[i]['name'], r=res.content)) #type: ignore[str-bytes-safe]
+            try:
+                res: Response = post(url=f"{host}:{port}/{param}/", headers=headers, data=self.items[i])
+                if res.status_code == 200 or res.status_code == 201:
+                    print("Successful post of ", self.items[i]["name"])
+                else:
+                    print("Unsuccessful post of {i}: {r}".format(i=self.items[i]['name'], r=res.content)) #type: ignore[str-bytes-safe]
+            except:
+                print("\nFailed to establish connection to backend. Make sure you're using the correct port and make sure the backend is running.")
+                print(f"Host: {host}\nPort: {port}")
+                sys.exit()
         print("\nAll Done.")
 
 
@@ -61,7 +67,8 @@ def GetContent() -> HtmlElement:
     req: Response = get(f"{const.WIKI_URL}/{const.LOOT_PARAMETER}")
     if req.status_code == 200:
         return html.fromstring(req.content)
-    raise Exception("Failed to establish connection ", req.content)
+    print(f"Failed to establish connection with error code {req.status_code}\nContent\n{req.content}") #type: ignore[str-bytes-safe]
+    sys.exit()
 
 
 def SortContent(HTMLContent: HtmlElement) -> MutableSequence[const.ITEM_TYPE]:

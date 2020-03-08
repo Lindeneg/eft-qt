@@ -21,13 +21,27 @@ $ cd backend
 
 $ (env) python -m pip install -r requirements.txt
 
-$ (env) cd src && python manage.py runserver
+$ (env) cd src && python manage.py migrate
+
+$ (env) python manage.py runserver
 ```
 
 ```shell
 # In a new shell
 
-$ cd frontend
+$ cd scraper
 
-$ npm start
+# In a new virtual enviroment
+
+$ (env) python -m pip install -r requirements.txt
+
+$ (env) python -c "from scraper import Scraper; scraper=Scraper(); scraper.update_items(); scraper.update_backend();"
+
+# Deactivate virtual enviroment
+
+$ (env) deactivate
+
+# Start frontend
+
+$ cd ../frontend && npm start
 ```
