@@ -3,21 +3,23 @@ import axios from 'axios';
 
 import { Card } from 'antd';
 
-import Replacer from '../Tools/Replacer';
-import BCString from '../Tools/BCString';
+import { Replacer, BCString } from '../Tools/Tools';
+import DEBUG from '../debug';
 
 
-const mQuests = (data, type) => {
+const mQuests = (d, t) => {
     let q = [];
     try {
-        let l = data.quests.length;
+        let l = d.quests.length;
         if (typeof(l) !== undefined) {
-            Object.keys(data[`${type}`]).forEach(i => {
-                q.push(data[`${type}`][`${i}`]);
+            Object.keys(d[`${t}`]).forEach(i => {
+                q.push(d[`${t}`][`${i}`]);
             });
         } 
     } catch (err) {
-        console.error("DetailViewError", err);
+        if (DEBUG === true) {
+            console.error("ViewError", err);
+        }
     }
     return q;
 }
@@ -55,17 +57,30 @@ class ItemDetail extends React.Component {
 
         const quests = [];
         const hideout = [];
-       
-        for (const [index, value] of mQuests(this.state.notes, "quests").entries()) {
-            quests.push(<li key={index}>{value}</li>);
+        
+        try {
+            for (const [index, value] of mQuests(this.state.notes, "quests").entries()) {
+                quests.push(<li key={index}>{value}</li>);   
+            }
+        } catch (err) {
+            if (DEBUG === true) {
+                console.error("ViewError", err);
+            }
         }
-        for (const [index, value] of mQuests(this.state.notes, "hideout").entries()) {
-            hideout.push(<li key={index}>{value}</li>);
+
+        try {
+            for (const [index, value] of mQuests(this.state.notes, "hideout").entries()) {
+                hideout.push(<li key={index}>{value}</li>);
+            }
+        } catch (err) {
+            if (DEBUG === true) {
+                console.error("ViewError", err);
+            }
         }
 
         return (
             <Card title={this.state.item.name + " - " + this.state.item.item_type}>
-                <img src={this.state.img.path} height={this.state.img.height} width={this.state.img.width} alt=""/>
+                <img src={this.state.img.path} height={this.state.img.height} width={this.state.img.width} alt={this.state.item.name}/>
                 <br/><br/>
                 <a href={this.state.item.url}>Tarkov Wiki</a>
                 <br/><br/>
