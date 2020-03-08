@@ -31,7 +31,7 @@ const Replacer = (data) => {
         mData = JSON.parse(mData);
     } catch (err) {
         if (DEBUG === true) {
-          console.error("ReplacerError", err);
+          console.error("ReplacerError", err, mData);
         }
         mData = data;
     } finally {

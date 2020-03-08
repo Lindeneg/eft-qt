@@ -4,16 +4,17 @@ Author : Christian Lindeneg
 Contact: christian@lindeneg.org
 Licence: CC BY-NC-SA 3.0
 
-This scraper gathers terse information about loot items in Escape From Tarkov.
-The data comes from the unofficial Tarkov gamepedia, which is available under the CC BY-NC-SA 3.0 license
+Updates the backend with data gathered from scraper.py
+
+The data comes from the unofficial Tarkov gamepedia available under the CC BY-NC-SA 3.0 license
 https://escapefromtarkov.gamepedia.com
 """
 
-from typing import Union, MutableSequence, Sequence, Tuple, List
+from typing import Union, MutableSequence, Sequence, Tuple, List, MutableMapping, Optional, Dict, Any
 
 from lxml import html
 from lxml.html import HtmlElement
-from requests import get, Response, RequestException
+from requests import get, post, Response, RequestException
 from bs4 import BeautifulSoup
 
 try:
@@ -24,51 +25,60 @@ except ImportError:
 
 class Scraper:
     """
-    Scraping class with a single static method to fetch data from Tarkov Wiki
+    Scraping and posting class
     """
-    @staticmethod
-    def GetItems() -> Sequence[const.ITEM_TYPE]:
+    def __init__(self) -> None:
+        self.items: Sequence[const.ITEM_TYPE] = []
+
+    def fetch(self) -> Sequence[const.ITEM_TYPE]:
         content: HtmlElement = GetContent()
-        return SortContent(content)
+        self.items = SortContent(content)
+        return self.items
+    
+    def update_backend(
+        self,
+        host: str = "http://127.0.0.1",
+        port: Union[int, str] = "8000",
+        param: str ="api/create",
+        headers: Dict[str, Union[str, Any]] = {}
+    ) -> None:
+        if len(self.items) <= 0:
+            return
+        for i in range(len(self.items)):
+            self.items[i]["img_info"] = str(self.items[i]["img_info"])
+            self.items[i]["notes"] = str(self.items[i]["notes"])
+            res: Response = post(url=f"{host}:{port}/{param}/", headers=headers, data=self.items[i])
+            if res.status_code == 200 or res.status_code == 201:
+                print("Successful post of ", self.items[i]["name"])
+            else:
+                print("Unsuccessful post of {i}: {r}".format(i=self.items[i]['name'], r=res.content)) #type: ignore[str-bytes-safe]
+        print("\nAll Done.")
 
 
 def GetContent() -> HtmlElement:
     """
     Get html content from the Tarkov wiki Loot page
     """
-    e: RequestException
-    try:
-        req: Response = get(f"{const.WIKI_URL}/{const.LOOT_PARAMETER}")
-    except RequestException as e:
-        exit()
+    req: Response = get(f"{const.WIKI_URL}/{const.LOOT_PARAMETER}")
     if req.status_code == 200:
         return html.fromstring(req.content)
-    raise Exception("EXCEPTION")
+    raise Exception("Failed to establish connection ", req.content)
 
 
 def SortContent(HTMLContent: HtmlElement) -> MutableSequence[const.ITEM_TYPE]:
     """
-    Sorts the html content into an ITEM_TYPE for each item, with the following structure:
-    {
-        'name': str,
-        'url': str',
-        'item_type': str,
-        'notes': NOTE_TYPE,
-        'img_info': {
-            'path': str,
-            'height': str,
-            'width': str
-        }
-    }
+    Sorts the html content into an item type
     """
     items: MutableSequence[const.ITEM_TYPE] = []
-    n: int = 2  # start from second n in xpath - first n is the table header
+    # start from second n in xpath - first n is the table header
+    n: int = 2
     while True:
         data: Union[None, MutableSequence[bytes]] = [html.tostring(item) for item in HTMLContent.xpath(const.XPATH(str(n)))]
         if data and len(data) >= 1:
             soup: BeautifulSoup = BeautifulSoup(data[0], 'lxml')
             itemData: MutableSequence[str] = RemoveEmptyItems(soup.text.split("\n"))
-            notes: MutableSequence[str] = CheckForAdditionelSplits(itemData[2:])  # first two entries are always name and item type, thus we start from the third entry
+            # first two entries are always name and item type, thus we start from the third entry
+            notes: MutableSequence[str] = CheckForAdditionelSplits(itemData[2:])
             imgPath, imgHeight, imgWidth = GetIMGInfo(soup, 'src'), GetIMGInfo(soup, 'height'), GetIMGInfo(soup, 'width')
             if imgPath is not False:
                 items.append({
@@ -110,19 +120,13 @@ def CheckForAdditionelSplits(notes: MutableSequence[str]) -> MutableSequence[str
 
 def SortNotes(notes: MutableSequence[str]) -> const.NOTE_TYPE:
     """
-    Sorts a sequence of strings descriping the item into an note type, with this structure:
-    {
-        'barter_item': bool, 
-        'crafting_item': bool, 
-        'quests': List[Tuple[str]], 
-        'hideout': List[str]
-    }
+    Sorts a sequence of strings descriping the item into an note type
     """
     sortedNotes: const.NOTE_TYPE = {
         const.BARTER: False,
         const.CRAFTING: False,
-        const.QUESTS: [],
-        const.HIDEOUT: []
+        const.QUESTS: {},
+        const.HIDEOUT: {}
     }
     note: str
     for note in notes:
@@ -135,40 +139,49 @@ def SortNotes(notes: MutableSequence[str]) -> const.NOTE_TYPE:
             while i < len(notes):
                 if notes[i].lower() == const.HIDEOUT:
                     break
-                sortedNotes[const.QUESTS].append(notes[i])
+                sortedNotes[const.QUESTS][str(i)] = notes[i]
                 i += 1
         if note.lower() == const.HIDEOUT:
             j: int = notes.index(note) + 1
             while j < len(notes):
-                sortedNotes[const.HIDEOUT].append(notes[j])
+                sortedNotes[const.HIDEOUT][str(j)] = notes[j]
                 j += 1
-    sortedNotes[const.QUESTS] = SortQuests(sortedNotes[const.QUESTS])
+    sortedNotes[const.QUESTS] = SortQH(sortedNotes[const.QUESTS])
+    sortedNotes[const.HIDEOUT] = SortQH(sortedNotes[const.HIDEOUT])
     return sortedNotes
 
 
-def SortQuests(quests: Sequence[str]) -> List[Tuple[str, str]]:
+def SortQH(items: MutableMapping[int, str]) -> MutableMapping[int, str]:
     """
     Finds all quests the given item is involved in 
     Saves the quest description as well as the quest name itself
     """
-    mQuests = []
-    quest: str
-    for quest in quests:
-        mQuests.append((quest, quest.split(const.QUEST)[-1].replace(" ", "_")))
-    return mQuests
+    mItems: MutableMapping[int, str] = {}
+    for k, v in items.items():
+        bV = v.upper()
+        if bV != const.BARTER.upper() and bV != const.BARTER.replace("_", " ").upper() \
+            and bV != const.CRAFTING.upper() and bV != const.CRAFTING.replace("_", " ").upper():
+            mItems[k] = v
+    return mItems
 
 
 def GetIMGInfo(soup: BeautifulSoup, info: str) -> Union[str, None, bool]:
+    """
+    Tries to extract image information
+    """
     try:
         IMGInfo = soup.img[info]
     except KeyError:
         IMGInfo = None
     except TypeError:
-        return False
+        IMGInfo = False
     return IMGInfo
 
 
 def RemoveEmptyItems(dirtyList: MutableSequence[str]) -> MutableSequence[str]:
+    """
+    Removes empty entries
+    """
     cleanList = []
     for item in dirtyList:
         if not item == "":

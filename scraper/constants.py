@@ -1,3 +1,7 @@
+"""
+Constant variables and types
+"""
+
 from os import path
 from string import ascii_letters, digits
 from typing import Final, Union, MutableMapping, Mapping, Callable, Any
