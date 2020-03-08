@@ -17,7 +17,5 @@ class Constants:
     BARTER: Final[str] = 'barter_item'
     CRAFTING: Final[str] = 'crafting_item'
     HIDEOUT: Final[str] = 'hideout'
-    SFD: Final[str] = 'Secure Flash drive'
-    MBT: Final[str] = 'Medical bloodset'
     QUESTS: Final[str] = 'quests'
     QUEST: Final[str] = 'quest '
