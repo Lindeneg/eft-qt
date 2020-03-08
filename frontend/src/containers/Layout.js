@@ -7,6 +7,7 @@ const { Header, Content, Footer } = Layout;
 const { Search } = Input;
 
 
+
 const DefaultLayout = (props) => {
     return (
         <Layout className="layout">
@@ -14,7 +15,7 @@ const DefaultLayout = (props) => {
         <div>
             <Search
             placeholder="(Currently Inactive)"
-            onSearch={value => console.log(props.dataSource)}
+            onSearch={value => window.location.replace(`/search/${value}`)}
             style={{ width: 200 }}
             />
         </div>
@@ -27,7 +28,7 @@ const DefaultLayout = (props) => {
                 {props.children}
             </div>
         </Content>
-        <Footer style={{ textAlign: 'center' }}>Made by Christian Lindeneg</Footer>
+        <Footer style={{ textAlign: 'center' }}>Made by <a href="https://github.com/Lindeneg">Lindeneg</a> as a learning project</Footer>
         </Layout>
     );
 }

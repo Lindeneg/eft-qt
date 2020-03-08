@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import { Card } from 'antd';
 
-import { Replacer, BCString } from '../Tools/Tools';
+import { Replacer, BCString } from '../tools/tools';
 import DEBUG from '../debug';
 
 

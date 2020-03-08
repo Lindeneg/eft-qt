@@ -33,8 +33,9 @@ const Replacer = (data) => {
           console.error("ReplacerError", err);
         }
         mData = data;
+    } finally {
+        return mData;
     }
-    return mData;
 }
 
 export { BCString, Replacer };

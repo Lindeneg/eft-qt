@@ -10,7 +10,11 @@ class ItemList extends React.Component {
     }
 
     componentDidMount() {
-        axios.get('http://127.0.0.1:8000/api/')
+        let URL = 'http://127.0.0.1:8000/api/';
+        if (this.props.match.url !== '/') {
+            URL += `?search=${this.props.match.params.value}`;
+        }
+        axios.get(URL)
         .then(res => {
             this.setState({
                 items: res.data

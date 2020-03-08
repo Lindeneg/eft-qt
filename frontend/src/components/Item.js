@@ -1,7 +1,7 @@
 import React from 'react';
 import { List } from 'antd';
 
-import { Replacer, BCString } from '../Tools/Tools';
+import { Replacer, BCString } from '../tools/tools';
 import DEBUG from '../debug';
 
 const ItemDescription = (d) => {
@@ -22,6 +22,22 @@ const ItemDescription = (d) => {
   }
 }
 
+const ItemMeta = (d) => {
+    //console.log("ITEMMETA", d);
+    if (typeof(d) === undefined) {
+        return (
+            <span/>
+        );
+    } else {
+        return (
+            <List.Item.Meta
+                title={<a href={'/' + d.name}>{d.name}</a>}
+                description={ItemDescription(d.notes)}
+            />
+        );
+    }
+}
+
 const Plural = (l, s) => {
     if (l === 1) {
       return s
@@ -37,10 +53,7 @@ const Item = (props) => {
         dataSource={props.data}
         renderItem={item => (
             <List.Item>
-            <List.Item.Meta
-                title={<a href={'/' + item.name}>{item.name}</a>}
-                description={ItemDescription(item.notes)}
-            />
+                {ItemMeta(item)}
             </List.Item>
         )}
         />
