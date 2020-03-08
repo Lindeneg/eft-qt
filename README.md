@@ -15,7 +15,7 @@ Usage
 ### Requires [Python 3](https://www.python.org/downloads/) and [npm](https://www.npmjs.com/get-npm)
 
 ```shell
-$ cd backend
+$ git clone https://github.com/Lindeneg/eft-qt.git && cd eft-qt/backend
 
 # In a new virtual enviroment
 

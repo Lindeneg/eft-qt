@@ -1,4 +1,4 @@
-EFT Quest Item Scraper
+EFT-QT Scraper
 ===============
 
 Fetches EFT quest items and associated information. 
