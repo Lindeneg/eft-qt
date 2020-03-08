@@ -41,7 +41,7 @@ $ (env) python -c "from scraper import Scraper; scraper=Scraper(); scraper.updat
 
 $ (env) deactivate
 
-# Start frontend
+$ cd ../frontend && npm install
 
-$ cd ../frontend && npm start
+$ npm start
 ```
