@@ -12,7 +12,7 @@ I've failed a lot and I've learned a lot - so I'll keep failing, so I can keep l
 Usage
 ===============
 
-### Requires [Python 3](https://www.python.org/downloads/) and [npm](https://www.npmjs.com/get-npm)
+### Requires [Python 3](https://www.python.org/downloads/) and [Node.js](https://nodejs.org/en/)
 
 ```shell
 $ git clone https://github.com/Lindeneg/eft-qt.git && cd eft-qt/backend
