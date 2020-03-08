@@ -30,10 +30,9 @@ class Scraper:
     def __init__(self) -> None:
         self.items: Sequence[const.ITEM_TYPE] = []
 
-    def fetch(self) -> Sequence[const.ITEM_TYPE]:
+    def update_items(self) -> None:
         content: HtmlElement = GetContent()
         self.items = SortContent(content)
-        return self.items
     
     def update_backend(
         self,
@@ -153,8 +152,7 @@ def SortNotes(notes: MutableSequence[str]) -> const.NOTE_TYPE:
 
 def SortQH(items: MutableMapping[int, str]) -> MutableMapping[int, str]:
     """
-    Finds all quests the given item is involved in 
-    Saves the quest description as well as the quest name itself
+    Sorts invalid values in quest and hideout dictionaries
     """
     mItems: MutableMapping[int, str] = {}
     for k, v in items.items():
