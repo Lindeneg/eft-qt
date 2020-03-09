@@ -1,11 +1,13 @@
 EFT Quest Items
 ===============
 
-A simple learning project to intergrate React and Django as frontend and backend, respectively.
+A simple learning project to humbly learn and intergrate React/Django as frontend and backend, respectively.
 
-The idea is that you can easily, in raid, search for an item and see if its involved in quests, upgrades or crafting.
+The idea is that you can easily, in raid, search after an Escape From Tarkov item and see if its involved in quests, upgrades or crafting.
 
 The project is still in it's infancy and although it does work, it can be improved on almost every aspect.
+
+As of now, only "loot" items are webscraped. Weapons, armour and so on is not (it will be included however)
 
 I've failed a lot and I've learned a lot - so I'll keep failing, so I can keep learning! It has certainly been fun. 
 
@@ -45,3 +47,13 @@ $ cd ../frontend && npm install
 
 $ npm start
 ```
+
+Pictures
+======
+[![Front Page](https://i.ibb.co/mFYwF10/front.png "EFT-QT Front")](https://i.ibb.co/mFYwF10/front.png)
+
+[![Item Page 1](https://i.ibb.co/nzX8pZT/item.png "EFT-QT Item Page")](https://i.ibb.co/nzX8pZT/item.png)
+
+[![Search Page](https://i.ibb.co/tH46kt2/search.png "EFT-QT Search")](https://i.ibb.co/tH46kt2/search.png)
+
+[![Item Page 2](https://i.ibb.co/3kg33LB/item2.png "EFT-QT Item Page")](https://i.ibb.co/3kg33LB/item2.png)
