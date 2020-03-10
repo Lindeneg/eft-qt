@@ -56,4 +56,3 @@ Pictures
 
 [![Search Page](https://i.ibb.co/tH46kt2/search.png "EFT-QT Search")](https://i.ibb.co/tH46kt2/search.png)
 
-[![Item Page 2](https://i.ibb.co/3kg33LB/item2.png "EFT-QT Item Page")](https://i.ibb.co/3kg33LB/item2.png)
