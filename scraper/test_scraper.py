@@ -40,7 +40,7 @@ class TestSortQH(unittest.TestCase):
     def testValidCase(self):
         case = {1: "Lorem ipsum dolor sit amet Incidsidunt - Labore"}
         expectedCase = {1: "Lorem ipsum dolor sit amet Incidsidunt - Labore"}
-        testCase = CheckForAdditionelSplits(case)
+        testCase = SortQH(case)
         self.assertEqual(testCase, expectedCase)
 
 
