@@ -3,8 +3,6 @@ EFT Quest Items
 
 A simple learning project to humbly learn and intergrate React/Django as frontend and backend, respectively.
 
-The idea is that you can easily, in raid, search after an Escape From Tarkov item and see if its involved in quests, upgrades or crafting.
-
 The project is still in it's infancy and although it does work, it can be improved on almost every aspect.
 
 As of now, only "loot" items are webscraped. Weapons, armour and so on is not (it will be included however)

@@ -135,8 +135,9 @@ def CheckForAdditionelSplits(notes: MutableSequence[str]) -> MutableSequence[str
     ['Barter Item', 'Crafting item']
     """
     sortedList = []
+    note: str
     for note in notes:
-        for i in range(len(note)-1):
+        for i in range(len(str(note))-1):
             if note[i] in LEGAL_SYMBOLS and note[i+1] in LEGAL_SYMBOLS and note[i].islower() and note[i+1].isupper():
                 sortedList.extend([note[:i+1], note[i+1:]])
     if not sortedList:
